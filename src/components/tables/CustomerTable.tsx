@@ -1,6 +1,6 @@
 import React from "react";
 import { useTable, useSortBy, usePagination } from "react-table";
-import { Customer } from "../../types";
+import type { Customer } from "../../types";
 
 interface CustomerTableProps {
   data: Customer[];
