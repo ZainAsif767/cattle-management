@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
+  register: (email: string, name: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -19,12 +20,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(true);
   };
 
+  const register = async (_email: string, _name: string, _password: string) => {
+    console.log("Registering with email:", _email, "and password:", _password);
+    // TODO: Implement actual registration logic
+    // For now, we'll just simulate a successful registration
+    setIsAuthenticated(true);
+  };
+
   const logout = () => {
     setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
