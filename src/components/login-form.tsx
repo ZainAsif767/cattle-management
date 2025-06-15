@@ -80,7 +80,7 @@ export function LoginForm({
                 />
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? "Signing in..." : "Login without account"}
               </Button>
             </div>
             <div className="text-center text-sm">
