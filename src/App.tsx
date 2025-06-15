@@ -1,84 +1,59 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { ThemeProvider } from "./components/theme-provider";
+import { LoginForm } from "./components/login-form";
+import { SignUpForm } from "./components/signup-form";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import Customers from "./pages/Customers";
-import NewCustomer from "./pages/NewCustomer";
-import Invoices from "./pages/Invoices";
-import Reports from "./pages/Reports";
-import "./App.css";
+import Dashboard from "./app/dashboard/Dashboard";
+import LoginLayout from "./components/layouts/LoginLayout";
 
-function PrivateRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
+function AppRoutes() {
+  const { isAuthenticated } = useAuth();
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
-
-  return <>{children}</>;
+  return (
+    <Routes>
+      {isAuthenticated ? (
+        <Route element={<Dashboard />}>
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<div>Dashboard Content</div>} />
+          <Route path="/customers" element={<div>Customers Page</div>} />
+          <Route path="/invoices" element={<div>Invoices Page</div>} />
+          <Route path="/reports" element={<div>Reports Page</div>} />
+        </Route>
+      ) : (
+        <>
+          <Route
+            path="/login"
+            element={
+              <LoginLayout>
+                <LoginForm />
+              </LoginLayout>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <LoginLayout>
+                <SignUpForm />
+              </LoginLayout>
+            }
+          />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </>
+      )}
+    </Routes>
+  );
 }
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/customers"
-            element={
-              <PrivateRoute>
-                <Customers />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/customers/new"
-            element={
-              <PrivateRoute>
-                <NewCustomer />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/invoices"
-            element={
-              <PrivateRoute>
-                <Invoices />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/reports"
-            element={
-              <PrivateRoute>
-                <Reports />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/" element={<Navigate to="/dashboard" />} />
-        </Routes>
-      </AuthProvider>
-    </Router>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <BrowserRouter>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
